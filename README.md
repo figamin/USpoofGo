@@ -30,6 +30,7 @@ USpoofGo is a GPS spoofing bot for SuperFanU based programs.
 ## Why rewrite in Go?
 - Learning (good to get to know a new language)
 - Reduced overhead (lack of JVM), useful for running multiple concurrent instances
+- Easier to run (user does not need the JRE)
 - No external libraries (used builtin json parsing, even if it is a pain)
 ### Preview
 ```
