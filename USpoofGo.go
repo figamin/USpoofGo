@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/chrisport/simplejson"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -110,6 +109,7 @@ func generateUUID() string {
 }
 
 func logIn() {
+	fmt.Println("Logging in with username " + user + " at school ID " + nid + "...")
 
 	request, err := http.PostForm("https://api.superfanu.com/7.0.1/login",
 		url.Values{
@@ -123,7 +123,25 @@ func logIn() {
 		log.Fatalln(err)
 	}
 	body, _ := ioutil.ReadAll(request.Body)
-	fmt.Println(string(body))
-	jObject, _ := simplejson.NewJSONArrayFromString(string(body))
-	fmt.Println(test)
+	var results interface{}
+	err = json.Unmarshal([]byte(string(body)), &results)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	result3 := results.(map[string]interface{})["data"].([]interface{})
+	for _, v := range result3 {
+		loginKey = fmt.Sprint(v.(map[string]interface{})["login_key"])
+	}
+	fmt.Println(loginKey)
+}
+
+func getFeed() {
+	fmt.Printf("Getting feed...")
+	request, _ := http.NewRequest("GET", "https://api.superfanu.com/7.0.1/feed", nil)
+	request.Header.Add("nid", nid)
+	request.Header.Add("platform", platform)
+	request.Header.Add("uuid", uuid)
+	request.Header.Add("login_key", loginKey)
+	response, _ := hclient.Do(request)
+
 }
