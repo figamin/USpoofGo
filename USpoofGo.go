@@ -121,11 +121,11 @@ func main() {
 		for i := range eventIDs {
 			var times = time.Second
 			for times > time.Duration(0) {
-				//times = startTimes[i].Sub(time.Now())
-				times = time.Duration(0)
+				times = startTimes[i].Sub(time.Now())
+				//times = time.Duration(0)
 				fmt.Print(times)
 				fmt.Println(" until " + eventDescriptions[i])
-				time.Sleep(time.Second)
+				time.Sleep(time.Minute)
 			}
 			checkIn(i)
 		}
