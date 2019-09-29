@@ -1,5 +1,5 @@
 # USpoofGo
-USpoofGo is a GPS spoofing bot for SuperFanU based programs.
+USpoofGo is [USpoof](https://github.com/figman57/USpoof), rewritten in Go, and is a GPS spoofing bot for SuperFanU based programs.
 
   - Automatically fetches events and checks into them
   - Live event countdown
