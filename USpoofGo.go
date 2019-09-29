@@ -15,6 +15,10 @@ import (
 var user, pass, nid, platform, uuid string
 var loginKey = ""
 var hclient = http.Client{}
+var eventIDs, eventDescriptions, pointValues []string
+var generatedLatitidues, generatedLongitudes []float32
+var startTimes, endTimes []time.Time
+var err error
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -47,7 +51,6 @@ func main() {
 		"0.  Manual NID Entry")
 	var input int
 	fmt.Scanln(&input)
-	input = 1
 	switch input {
 	case 1:
 		nid = "694"
@@ -97,6 +100,7 @@ func main() {
 	platform = possiblePlatforms[rand.Intn(2)]
 	uuid = generateUUID()
 	logIn()
+	getFeed()
 }
 
 func generateUUID() string {
@@ -124,6 +128,9 @@ func logIn() {
 	}
 	body, _ := ioutil.ReadAll(request.Body)
 	var results interface{}
+	if request.StatusCode == 200 {
+		fmt.Println("Login Successful!")
+	}
 	err = json.Unmarshal([]byte(string(body)), &results)
 	if err != nil {
 		log.Fatalln(err)
@@ -143,5 +150,15 @@ func getFeed() {
 	request.Header.Add("uuid", uuid)
 	request.Header.Add("login_key", loginKey)
 	response, _ := hclient.Do(request)
-
+	if response.StatusCode == 200 {
+		fmt.Println("Feed successfully fetched!")
+	}
+	body, _ := ioutil.ReadAll(response.Body)
+	var results interface{}
+	err = json.Unmarshal([]byte(string(body)), &results)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	result3 := results.(map[string]interface{})["data"].([]interface{})
+	fmt.Println(result3)
 }
