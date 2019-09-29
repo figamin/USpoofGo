@@ -105,6 +105,17 @@ func main() {
 	logIn()
 	getFeed()
 	eventPrinter()
+	for {
+		for i := range eventIDs {
+			var times = time.Second
+			for times > time.Second*time.Duration(0) {
+				times = startTimes[i].Sub(time.Now())
+				fmt.Print(times)
+				fmt.Println(" until " + eventDescriptions[i])
+				time.Sleep(time.Minute)
+			}
+		}
+	}
 }
 
 func generateUUID() string {
@@ -143,7 +154,6 @@ func logIn() {
 	for _, v := range result3 {
 		loginKey = fmt.Sprint(v.(map[string]interface{})["login_key"])
 	}
-	fmt.Println(loginKey)
 }
 
 func getFeed() {
@@ -171,9 +181,12 @@ func getFeed() {
 			eventIDs = append(eventIDs, fmt.Sprint(result5["eid"]))
 			eventDescriptions = append(eventDescriptions, fmt.Sprint(result5["description"]))
 			pointValues = append(pointValues, fmt.Sprint(result5["pointvalue"]))
+			_, offset := time.Now().Zone()
 			var newStartTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["starttime"]), " ", "T", 1)+"Z")
+			newStartTime = newStartTime.Add(time.Second * time.Duration(-offset))
 			startTimes = append(startTimes, newStartTime.Add(time.Hour+time.Minute*time.Duration(rand.Intn(10))))
 			var newEndTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["endtime"]), " ", "T", 1)+"Z")
+			newEndTime = newEndTime.Add(time.Second * time.Duration(-offset))
 			endTimes = append(endTimes, newEndTime.Add(time.Hour))
 		}
 	}
@@ -181,43 +194,53 @@ func getFeed() {
 
 func eventPrinter() {
 	for i := range eventIDs {
-		fmt.Println("EVENT ID = " + eventIDs[i])
-		fmt.Println("EVENT DESCRIPTION = " + eventDescriptions[i])
-		fmt.Println("POINT VALUE = " + pointValues[i])
-		fmt.Println("START TIME = " + startTimes[i].Format(time.RFC1123))
-		fmt.Println("END TIME = " + endTimes[i].Format(time.RFC1123))
-		request, _ := http.NewRequest("GET", "https://api.superfanu.com/7.0.1/event/"+eventIDs[i]+"/details", nil)
-		request.Header.Add("nid", nid)
-		request.Header.Add("platform", platform)
-		request.Header.Add("uuid", uuid)
-		request.Header.Add("login_key", loginKey)
-		response, _ := hclient.Do(request)
-		if response.StatusCode == 200 {
-			fmt.Println("Feed successfully fetched!")
-		}
-		body, _ := ioutil.ReadAll(response.Body)
-		var results interface{}
-		err = json.Unmarshal([]byte(string(body)), &results)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		result3 := results.(map[string]interface{})["data"].([]interface{})
-		for _, v := range result3 {
-			result4 := v.(map[string]interface{})["event"].(map[string]interface{})["venues"].([]interface{})
-			for _, u := range result4 {
-				var result5 = u.(map[string]interface{})
-				fmt.Println("LATITUDE = " + fmt.Sprint(result5["latitude"]))
-				fmt.Println("LONGITUDE = " + fmt.Sprint(result5["longitude"]))
-				var randCloseLatitude float64
-				var randCloseLongitude float64
-				randCloseLatitude, _ = strconv.ParseFloat(fmt.Sprint(result5["latitude"]), 64)
-				randCloseLongitude, _ = strconv.ParseFloat(fmt.Sprint(result5["longitude"]), 64)
-				randCloseLatitude = ((math.Round(randCloseLatitude*10000) * 100) + float64(rand.Intn(100))) / 1000000.0
-				randCloseLongitude = ((math.Round(randCloseLongitude*10000) * 100) + float64(rand.Intn(100))) / 1000000.0
-
+		if endTimes[i].Year() != 1 && startTimes[i].Year() != 1 {
+			fmt.Println("EVENT ID = " + eventIDs[i])
+			fmt.Println("EVENT DESCRIPTION = " + eventDescriptions[i])
+			fmt.Println("POINT VALUE = " + pointValues[i])
+			fmt.Println("START TIME = " + startTimes[i].Format(time.RFC1123))
+			fmt.Println("END TIME = " + endTimes[i].Format(time.RFC1123))
+			request, _ := http.NewRequest("GET", "https://api.superfanu.com/7.0.1/event/"+eventIDs[i]+"/details", nil)
+			request.Header.Add("nid", nid)
+			request.Header.Add("platform", platform)
+			request.Header.Add("uuid", uuid)
+			request.Header.Add("login_key", loginKey)
+			response, _ := hclient.Do(request)
+			body, _ := ioutil.ReadAll(response.Body)
+			var results interface{}
+			err = json.Unmarshal([]byte(string(body)), &results)
+			if err != nil {
+				log.Fatalln(err)
 			}
+			result3 := results.(map[string]interface{})["data"].([]interface{})
+			for _, v := range result3 {
+				result4 := v.(map[string]interface{})["event"].(map[string]interface{})["venues"].([]interface{})
+				for _, u := range result4 {
+					var result5 = u.(map[string]interface{})
+					var latitude = fmt.Sprint(result5["latitude"])
+					var longitude = fmt.Sprint(result5["longitude"])
+					fmt.Println("LATITUDE = " + latitude)
+					fmt.Println("LONGITUDE = " + longitude)
+					var randCloseLatitude float64
+					var randCloseLongitude float64
+					randCloseLatitude, _ = strconv.ParseFloat(latitude, 64)
+					randCloseLongitude, _ = strconv.ParseFloat(longitude, 64)
+					randCloseLatitude = ((math.Round(randCloseLatitude*10000) * 100) + float64(rand.Intn(100))) / 1000000.0
+					randCloseLongitude = ((math.Round(randCloseLongitude*10000) * 100) + float64(rand.Intn(100))) / 1000000.0
+					fmt.Println("RANDOM CLOSE LATITUDE = " + fmt.Sprint(randCloseLatitude))
+					fmt.Println("RANDOM CLOSE LONGITUDE = " + fmt.Sprint(randCloseLongitude))
+					generatedLatitidues = append(generatedLatitidues, randCloseLatitude)
+					generatedLongitudes = append(generatedLongitudes, randCloseLongitude)
+					fmt.Println("EXACT LOCATION PREVIEW = https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude)
+					fmt.Println("RANDOM CLOSE LOCATION PREVIEW = https://www.google.com/maps/search/?api=1&query=" + fmt.Sprint(randCloseLatitude) + "," + fmt.Sprint(randCloseLongitude))
+				}
+			}
+			fmt.Print("Event starts in ")
+			fmt.Println(startTimes[i].Sub(time.Now()))
+			fmt.Println()
 		}
 	}
+
 	if len(eventIDs) == 0 {
 		fmt.Println("No events currently. Check again later!")
 		os.Exit(0)
