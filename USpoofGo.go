@@ -24,8 +24,14 @@ var startTimes, endTimes []time.Time
 var err error
 
 func main() {
+	logfile, err := os.OpenFile("USpoofLog", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer logfile.Close()
+	log.SetOutput(logfile)
 	rand.Seed(time.Now().UnixNano())
-	fmt.Println("Welcome to USpoofGo 1.0\nBy Ian Anderson, 2019" +
+	fmt.Println("Welcome to USpoofGo 1.0.2\nBy Ian Anderson, 2019" +
 		"\nEnter your username: ")
 	_, err = fmt.Scanln(&user)
 	if err != nil {
@@ -123,8 +129,8 @@ func main() {
 			for times > time.Duration(0) {
 				times = startTimes[i].Sub(time.Now())
 				//times = time.Duration(0)
-				fmt.Print(times)
-				fmt.Println(" until " + eventDescriptions[i])
+				printTime(times)
+				fmt.Println(" until " + eventDescriptions[i] + "\n")
 				time.Sleep(time.Minute)
 			}
 			checkIn(i)
@@ -260,7 +266,8 @@ func eventPrinter() {
 			}
 		}
 		fmt.Print("Event starts in ")
-		fmt.Println(startTimes[i].Sub(time.Now()))
+		printTime(startTimes[i].Sub(time.Now()))
+		fmt.Println()
 		fmt.Println()
 	}
 
@@ -271,7 +278,7 @@ func eventPrinter() {
 }
 
 func checkIn(index int) {
-	request, _ := http.NewRequest("POST", "https://api.superfanu.com/7.0.1/login", nil)
+	request, _ := http.NewRequest("POST", "https://api.superfanu.com/7.0.1/event/check-in", nil)
 	request.PostForm = url.Values{
 		"eid":                 {eventIDs[index]},
 		"latitude":            {fmt.Sprint(generatedLatitidues[index])},
@@ -286,5 +293,14 @@ func checkIn(index int) {
 	request.Header.Add("login_key", loginKey)
 	response, _ := hclient.Do(request)
 	body, _ := ioutil.ReadAll(response.Body)
-	fmt.Println(string(body))
+	log.Println(string(body) + "\n")
+}
+
+func printTime(d time.Duration) {
+	var days = d.Hours() / 24
+	_, hours := math.Modf(days)
+	hours *= 24
+	_, minutes := math.Modf(hours)
+	minutes *= 60
+	fmt.Print(fmt.Sprint(int(days))+" days, "+fmt.Sprint(int(hours))+" hours, and "+fmt.Sprint(int(minutes)), " minutes")
 }
