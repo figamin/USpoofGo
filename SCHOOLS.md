@@ -1,4 +1,4 @@
-# Supported School List
+# Supported Schools List
 - UMass Minutemen
 - UMass Lowell River Hawks
 - Holy Cross Crusaders
