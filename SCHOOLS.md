@@ -1,1 +1,43 @@
-
+# Supported School List
+- UMass Minutemen
+- UMass Lowell River Hawks
+- Holy Cross Crusaders
+- Boston College Eagles
+- Boston University Terriers
+- Northeastern University Huskies
+- Harvard University Crimson
+- Babson Beavers
+- California Golden Bears
+- UCLA Bruins
+- California Baptist Lancers
+- Sacred Heart Pioneers
+- Fairfield Stags
+- New Hampshire Wildcats
+- Dartmouth Big Green
+- Keene State Hooties
+- Penn Quakers
+- Bucknell Bison
+- Lafayette Leopards
+- Maine Black Bears
+- Xavier Musketeers
+- Cincinnati Bearcats
+- Wichita State Shockers
+- George Fox Bruins
+- Briar Cliff Chargers
+- Drake Bulldogs
+- Iowa State Cyclones
+- Eastern Michigan Eagles
+- Grand Valley State Lakers
+- St. Mary's Rattlers
+- Texas A&M–Kingsville Javelinas
+- Brown Bears
+- Florida Gators
+- North Florida Ospreys
+- Marquette Golden Eagles
+- Indiana State Sycamores
+- North Alabama Lions
+- Saint Rose Golden Knights
+- Princeton Tigers
+- Lipscomb Bisons
+- UMBC Retrievers
+- Maryland Eastern Shore Hawks
