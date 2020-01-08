@@ -7,7 +7,7 @@ USpoofGo is [USpoof](https://github.com/figman57/USpoof), rewritten in Go, and i
   - Randomized platform, device UUID, check in time, and GPS Location
   - Support for many schools (suggestions are welcome)
 ### Supported School List
-[a relative link](SCHOOLS.md)
+[Here](SCHOOLS.md)
 ## Why rewrite in Go?
 - Learning (good to get to know a new language)
 - Better suited language (strange to write a single class CLI Java program)
