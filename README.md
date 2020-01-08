@@ -6,7 +6,7 @@ USpoofGo is [USpoof](https://github.com/figman57/USpoof), rewritten in Go, and i
   - Google Maps preview of event location
   - Randomized platform, device UUID, check in time, and GPS Location
   - Support for many schools (suggestions are welcome)
-### Supported School List
+### Supported Schools List
 [Here](SCHOOLS.md)
 ## Why rewrite in Go?
 - Learning (good to get to know a new language)
