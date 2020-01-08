@@ -18,7 +18,7 @@ import (
 var user, pass, nid, platform, uuid string
 var loginKey = ""
 var hclient = http.Client{}
-var eventIDs, eventDescriptions, pointValues []string
+var eventIDs, eventTitles, eventDescriptions, pointValues []string
 var generatedLatitidues, generatedLongitudes []float64
 var startTimes, endTimes []time.Time
 var err error
@@ -31,7 +31,7 @@ func main() {
 	defer logfile.Close()
 	log.SetOutput(logfile)
 	rand.Seed(time.Now().UnixNano())
-	fmt.Println("Welcome to USpoofGo 1.0.2\nBy Ian Anderson, 2019" +
+	fmt.Println("Welcome to USpoofGo 1.1\nBy Ian Anderson, 2019" +
 		"\nEnter your username: ")
 	_, err = fmt.Scanln(&user)
 	if err != nil {
@@ -42,74 +42,339 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("Select your school:\n" +
-		"1.  UMass Lowell\n" +
-		"2.  Drake University\n" +
-		"3.  College of St. Rose\n" +
-		"4.  Harvard University\n" +
-		"5.  Boston University\n" +
-		"6.  University of Maine\n" +
-		"7.  Southeast Missouri State University\n" +
-		"8.  California State University\n" +
-		"9.  University of Toledo\n" +
-		"10. Lee University\n" +
-		"11. Fairfield University\n" +
-		"12. Wichita State University\n" +
-		"13. University of Kentucky\n" +
-		"14. University of North Carolina at Charlotte\n" +
-		"15. University of Pennsylvania\n" +
-		"16. University of Hawaii at Manoa\n" +
-		"17. Minot State University\n" +
-		"18. Grand Valley State University\n" +
-		"19. Keene State College\n" +
-		"20. University of North Carolina at Pembroke\n" +
+	fmt.Println("Select your school's state:\n" +
+		"1.  Massachusetts\n" +
+		"2.  California\n" +
+		"3.  Connecticut\n" +
+		"4.  New Hampshire\n" +
+		"5.  Pennsylvania\n" +
+		"6.  Maine\n" +
+		"7.  Ohio\n" +
+		"8.  Kansas\n" +
+		"9.  Oregon\n" +
+		"10. Iowa\n" +
+		"11. Michigan\n" +
+		"12. Texas\n" +
+		"13. Rhode Island\n" +
+		"14. Florida\n" +
+		"15. Wisconsin\n" +
+		"16. Indiana\n" +
+		"17. Alabama\n" +
+		"18. New York\n" +
+		"19. New Jersey\n" +
+		"20. Tennessee\n" +
+		"21. Maryland\n" +
+		"22. \n" +
+		"23. \n" +
+		"24. \n" +
+		"25. \n" +
+		"26. \n" +
+		"27. \n" +
+		"28. \n" +
+		"29. \n" +
+		"30. \n" +
 		"0.  Manual NID Entry")
 	var input int
 	_, err = fmt.Scanln(&input)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	var input2 int
 	switch input {
-	case 1:
-		nid = "694"
+	case 1: //mass
+		fmt.Println("Select your school:\n" +
+			"1.  UMass Minutemen\n" +
+			"2.  UMass Lowell River Hawks\n" +
+			"3.  Holy Cross Crusaders\n" +
+			"4.  Boston College Eagles\n" +
+			"5.  Boston University Terriers\n" +
+			"6.  Northeastern University Huskies\n" +
+			"7.  Harvard University Crimson\n" +
+			"8.  Babson Beavers")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "539"
+		case 2:
+			nid = "694"
+		case 3:
+			nid = "244"
+		case 4:
+			nid = "47"
+		case 5:
+			nid = "51"
+		case 6:
+			nid = "675"
+		case 7:
+			nid = "50"
+		case 8:
+			nid = "761"
+		}
 	case 2:
-		nid = "627"
+		fmt.Println("Select your school:\n" +
+			"1.  California Golden Bears\n" +
+			"2.  UCLA Bruins\n" +
+			"3.  California Baptist Lancers")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "539"
+		case 2:
+			nid = "694"
+		case 3:
+			nid = "244"
+		}
 	case 3:
-		nid = "447"
+		fmt.Println("Select your school:\n" +
+			"1.  Sacred Heart Pioneers\n" +
+			"2.  Fairfield Stags")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "543"
+		case 2:
+			nid = "20"
+		}
 	case 4:
-		nid = "50"
+		fmt.Println("Select your school:\n" +
+			"1.  New Hampshire Wildcats\n" +
+			"2.  Dartmouth Big Green\n" +
+			"3.  Keene State Hooties")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			fmt.Println("School not working...")
+		case 2:
+			nid = "435"
+		case 3:
+			nid = "175"
+		}
 	case 5:
-		nid = "51"
+		fmt.Println("Select your school:\n" +
+			"1.  Penn Quakers\n" +
+			"2.  Bucknell Bison\n" +
+			"3.  Lafayette Leopards")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "435"
+		case 2:
+			nid = "392"
+		case 3:
+			nid = "426"
+		}
 	case 6:
-		nid = "10"
+		fmt.Println("Select your school:\n" +
+			"1.  Maine Black Bears")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "10"
+		}
 	case 7:
-		nid = "8"
+		fmt.Println("Select your school:\n" +
+			"1.  Xavier Musketeers\n" +
+			"2.  Cincinnati Bearcats")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			fmt.Println("School not working...")
+		case 2:
+			nid = "246"
+		}
 	case 8:
-		nid = "103"
+		fmt.Println("Select your school:\n" +
+			"1.  Wichita State Shockers")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "21"
+		}
 	case 9:
-		nid = "112"
+		fmt.Println("Select your school:\n" +
+			"1.  George Fox Bruins")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "605"
+		}
 	case 10:
-		nid = "114"
+		fmt.Println("Select your school:\n" +
+			"1.  Briar Cliff Chargers\n" +
+			"2.  Drake Bulldogs\n" +
+			"3.  Iowa State Cyclones")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "541"
+		case 2:
+			nid = "627"
+		case 3:
+			nid = "689"
+		}
 	case 11:
-		nid = "20"
+		fmt.Println("Select your school:\n" +
+			"1.  Eastern Michigan Eagles\n" +
+			"2.  Grand Valley State Lakers")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			fmt.Println("School not working...")
+		case 2:
+			nid = "412"
+		}
 	case 12:
-		nid = "21"
+		fmt.Println("Select your school:\n" +
+			"1.  St. Mary's Rattlers\n" +
+			"2.  Texas A&M–Kingsville Javelinas")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "395"
+		case 2:
+			nid = "472"
+		}
 	case 13:
-		nid = "119"
+		fmt.Println("Select your school:\n" +
+			"1.  Brown Bears")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "604"
+		}
 	case 14:
-		nid = "124"
+		fmt.Println("Select your school:\n" +
+			"1.  Florida Gators\n" +
+			"2.  North Florida Ospreys")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "35"
+		case 2:
+			nid = "672"
+		}
 	case 15:
-		nid = "28"
+		fmt.Println("Select your school:\n" +
+			"1.  Marquette Golden Eagles")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "445"
+		}
 	case 16:
-		nid = "547"
+		fmt.Println("Select your school:\n" +
+			"1.  Indiana State Sycamores")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "40"
+		}
 	case 17:
-		nid = "128"
+		fmt.Println("Select your school:\n" +
+			"1.  North Alabama Lions")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			fmt.Println("School not working...")
+		}
 	case 18:
-		nid = "412"
+		fmt.Println("Select your school:\n" +
+			"1.  Saint Rose Golden Knights")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "447"
+		}
 	case 19:
-		nid = "175"
+		fmt.Println("Select your school:\n" +
+			"1.  Princeton Tigers")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "149"
+		}
 	case 20:
-		nid = "185"
+		fmt.Println("Select your school:\n" +
+			"1.  Lipscomb Bisons")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "642"
+		}
+	case 21:
+		fmt.Println("Select your school:\n" +
+			"1.  UMBC Retrievers\n" +
+			"2.  Maryland Eastern Shore Hawks")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "310"
+		case 2:
+			nid = "392"
+		}
 	default:
 		fmt.Println("Enter custom number: ")
 		_, err = fmt.Scanln(&nid)
@@ -130,12 +395,13 @@ func main() {
 				times = startTimes[i].Sub(time.Now())
 				//times = time.Duration(0)
 				printTime(times)
-				fmt.Println(" until " + eventDescriptions[i] + "\n")
+				fmt.Println(" until " + eventTitles[i] + "\n")
 				time.Sleep(time.Minute)
 			}
 			checkIn(i)
 		}
 		eventIDs = nil
+		eventTitles = nil
 		eventDescriptions = nil
 		pointValues = nil
 		startTimes = nil
@@ -159,7 +425,7 @@ func generateUUID() string {
 func logIn() {
 	fmt.Println("Logging in with username " + user + " at school ID " + nid + "...")
 
-	request, err := http.PostForm("https://api.superfanu.com/7.0.1/login",
+	request, err := http.PostForm("https://api.superfanu.com/8.0/login",
 		url.Values{
 			"user":     {user},
 			"pass":     {pass},
@@ -207,9 +473,11 @@ func getFeed() {
 		var result4 = v.([]interface{})
 		for _, u := range result4 {
 			var result5 = u.(map[string]interface{})
+			//fmt.Println(result5)
 			var newStartTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["starttime"]), " ", "T", 1)+"Z")
 			if newStartTime.Year() != 1 {
 				eventIDs = append(eventIDs, fmt.Sprint(result5["eid"]))
+				eventTitles = append(eventTitles, fmt.Sprint(result5["title"]))
 				eventDescriptions = append(eventDescriptions, fmt.Sprint(result5["description"]))
 				pointValues = append(pointValues, fmt.Sprint(result5["pointvalue"]))
 				_, offset := time.Now().Zone()
@@ -226,6 +494,7 @@ func getFeed() {
 func eventPrinter() {
 	for i := range eventIDs {
 		fmt.Println("EVENT ID = " + eventIDs[i])
+		fmt.Println("EVENT TITLE = " + eventTitles[i])
 		fmt.Println("EVENT DESCRIPTION = " + eventDescriptions[i])
 		fmt.Println("POINT VALUE = " + pointValues[i])
 		fmt.Println("START TIME = " + startTimes[i].Format(time.RFC1123))
@@ -272,8 +541,8 @@ func eventPrinter() {
 	}
 
 	if len(eventIDs) == 0 {
-		fmt.Println("No events currently. Check again later!")
-		os.Exit(0)
+		fmt.Println("No events currently. Sleeping for 1 hour.")
+		//time.Sleep(time.Hour)
 	}
 }
 
@@ -291,6 +560,10 @@ func checkIn(index int) {
 	request.Header.Add("platform", platform)
 	request.Header.Add("uuid", uuid)
 	request.Header.Add("login_key", loginKey)
+	request.Header.Add("content-type", "application/x-www-form-urlencoded")
+	request.Header.Set("user-agent", "okhttp/3.11.0")
+	request.Header.Set("content-length", "109")
+
 	response, _ := hclient.Do(request)
 	body, _ := ioutil.ReadAll(response.Body)
 	log.Println(string(body) + "\n")
