@@ -64,7 +64,7 @@ func main() {
 		"19. New Jersey\n" +
 		"20. Tennessee\n" +
 		"21. Maryland\n" +
-		"22. \n" +
+		/*"22. \n" +
 		"23. \n" +
 		"24. \n" +
 		"25. \n" +
@@ -72,7 +72,7 @@ func main() {
 		"27. \n" +
 		"28. \n" +
 		"29. \n" +
-		"30. \n" +
+		"30. \n" +*/
 		"0.  Manual NID Entry")
 	var input int
 	_, err = fmt.Scanln(&input)
@@ -156,6 +156,7 @@ func main() {
 		switch input2 {
 		case 1:
 			fmt.Println("School not working...")
+			os.Exit(1)
 		case 2:
 			nid = "435"
 		case 3:
@@ -200,6 +201,7 @@ func main() {
 		switch input2 {
 		case 1:
 			fmt.Println("School not working...")
+			os.Exit(1)
 		case 2:
 			nid = "246"
 		}
@@ -253,6 +255,7 @@ func main() {
 		switch input2 {
 		case 1:
 			fmt.Println("School not working...")
+			os.Exit(1)
 		case 2:
 			nid = "412"
 		}
@@ -327,6 +330,7 @@ func main() {
 		switch input2 {
 		case 1:
 			fmt.Println("School not working...")
+			os.Exit(1)
 		}
 	case 18:
 		fmt.Println("Select your school:\n" +
