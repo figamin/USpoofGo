@@ -31,7 +31,7 @@ func main() {
 	defer logfile.Close()
 	log.SetOutput(logfile)
 	rand.Seed(time.Now().UnixNano())
-	fmt.Println("Welcome to USpoofGo 1.1\nBy Ian Anderson, 2019" +
+	fmt.Println("Welcome to USpoofGo 1.1.1\nBy Ian Anderson, 2020" +
 		"\nEnter your username: ")
 	_, err = fmt.Scanln(&user)
 	if err != nil {
@@ -65,14 +65,14 @@ func main() {
 		"20. Tennessee\n" +
 		"21. Maryland\n" +
 		"22. North Carolina\n" +
-		"23. \n" +
-		"24. \n" +
-		"25. \n" +
-		"26. \n" +
+		"23. Hawaii\n" +
+		"24. Arizona\n" +
+		"25. North Dakota\n" +
+		/*"26. \n" +
 		"27. \n" +
 		"28. \n" +
 		"29. \n" +
-		"30. \n" +
+		"30. \n" +*/
 		"0.  Manual NID Entry")
 	var input int
 	_, err = fmt.Scanln(&input)
@@ -90,7 +90,8 @@ func main() {
 			"5.  Boston University Terriers\n" +
 			"6.  Northeastern University Huskies\n" +
 			"7.  Harvard University Crimson\n" +
-			"8.  Babson Beavers")
+			"8.  Babson Beavers" +
+			"9.  Bentley Falcons")
 		_, err = fmt.Scanln(&input2)
 		if err != nil {
 			log.Fatalln(err)
@@ -112,6 +113,8 @@ func main() {
 			nid = "50"
 		case 8:
 			nid = "761"
+		case 9:
+			nid = "109"
 		}
 	case 2:
 		fmt.Println("Select your school:\n" +
@@ -133,7 +136,8 @@ func main() {
 	case 3:
 		fmt.Println("Select your school:\n" +
 			"1.  Sacred Heart Pioneers\n" +
-			"2.  Fairfield Stags")
+			"2.  Fairfield Stags" +
+			"3.  New Haven Chargers")
 		_, err = fmt.Scanln(&input2)
 		if err != nil {
 			log.Fatalln(err)
@@ -143,6 +147,8 @@ func main() {
 			nid = "543"
 		case 2:
 			nid = "20"
+		case 3:
+			nid = "207"
 		}
 	case 4:
 		fmt.Println("Select your school:\n" +
@@ -287,7 +293,8 @@ func main() {
 	case 14:
 		fmt.Println("Select your school:\n" +
 			"1.  Florida Gators\n" +
-			"2.  North Florida Ospreys")
+			"2.  North Florida Ospreys\n" +
+			"3.  South Florida Bulls")
 		_, err = fmt.Scanln(&input2)
 		if err != nil {
 			log.Fatalln(err)
@@ -297,10 +304,14 @@ func main() {
 			nid = "35"
 		case 2:
 			nid = "672"
+		case 3:
+			nid = "127"
 		}
 	case 15:
 		fmt.Println("Select your school:\n" +
-			"1.  Marquette Golden Eagles")
+			"1.  Marquette Golden Eagles" +
+			"2.  UW Milwaukee Panthers" +
+			"3.  UW Platteville Pioneers")
 		_, err = fmt.Scanln(&input2)
 		if err != nil {
 			log.Fatalln(err)
@@ -308,6 +319,10 @@ func main() {
 		switch input2 {
 		case 1:
 			nid = "445"
+		case 2:
+			nid = "65"
+		case 3:
+			nid = "432"
 		}
 	case 16:
 		fmt.Println("Select your school:\n" +
@@ -386,7 +401,8 @@ func main() {
 		}
 	case 22:
 		fmt.Println("Select your school:\n" +
-			"1.  UNC Pembroke Braves")
+			"1.  UNC Pembroke Braves\n" +
+			"2.  UNC Charlotte 49ers")
 		_, err = fmt.Scanln(&input2)
 		if err != nil {
 			log.Fatalln(err)
@@ -394,6 +410,41 @@ func main() {
 		switch input2 {
 		case 1:
 			nid = "185"
+		case 2:
+			nid = "124"
+		}
+	case 23:
+		fmt.Println("Select your school:\n" +
+			"1.  Hawaii Rainbow Warriors")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "547"
+		}
+	case 24:
+		fmt.Println("Select your school:\n" +
+			"1.  Arizona Wildcats")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "167"
+		}
+	case 25:
+		fmt.Println("Select your school:\n" +
+			"1.  North Dakota Fighting Hawks")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "706"
 		}
 	default:
 		fmt.Println("Enter custom number: ")
