@@ -5,28 +5,9 @@ USpoofGo is [USpoof](https://github.com/figman57/USpoof), rewritten in Go, and i
   - Live event countdown
   - Google Maps preview of event location
   - Randomized platform, device UUID, check in time, and GPS Location
-  - Support for 20 schools (suggestions are welcome)
-### Supported School List
-- UMass Lowell
-- Drake University
-- College of St. Rose
-- Harvard University
-- Boston University
-- University of Maine
-- Southeast Missouri State University
-- California State University
-- University of Toledo
-- Lee University
-- Fairfield University
-- Wichita State University
-- University of Kentucky
-- University of North Carolina at Charlotte
-- University of Pennsylvania
-- University of Hawaii at Manoa
-- Minot State University
-- Grand Valley State University
-- Keene State College
-- University of North Carolina at Pembroke
+  - Support for many schools (suggestions are welcome)
+### Supported Schools List
+[Here](SCHOOLS.md)
 ## Why rewrite in Go?
 - Learning (good to get to know a new language)
 - Better suited language (strange to write a single class CLI Java program)
