@@ -64,7 +64,7 @@ func main() {
 		"19. New Jersey\n" +
 		"20. Tennessee\n" +
 		"21. Maryland\n" +
-		/*"22. \n" +
+		"22. North Carolina\n" +
 		"23. \n" +
 		"24. \n" +
 		"25. \n" +
@@ -72,7 +72,7 @@ func main() {
 		"27. \n" +
 		"28. \n" +
 		"29. \n" +
-		"30. \n" +*/
+		"30. \n" +
 		"0.  Manual NID Entry")
 	var input int
 	_, err = fmt.Scanln(&input)
@@ -124,11 +124,11 @@ func main() {
 		}
 		switch input2 {
 		case 1:
-			nid = "539"
+			nid = "89"
 		case 2:
-			nid = "694"
+			nid = "45"
 		case 3:
-			nid = "244"
+			nid = "441"
 		}
 	case 3:
 		fmt.Println("Select your school:\n" +
@@ -155,8 +155,7 @@ func main() {
 		}
 		switch input2 {
 		case 1:
-			fmt.Println("School not working...")
-			os.Exit(1)
+			nid = "157"
 		case 2:
 			nid = "435"
 		case 3:
@@ -166,7 +165,8 @@ func main() {
 		fmt.Println("Select your school:\n" +
 			"1.  Penn Quakers\n" +
 			"2.  Bucknell Bison\n" +
-			"3.  Lafayette Leopards")
+			"3.  Lafayette Leopards\n" +
+			"4.  Edinboro Fighting Scots")
 		_, err = fmt.Scanln(&input2)
 		if err != nil {
 			log.Fatalln(err)
@@ -178,6 +178,8 @@ func main() {
 			nid = "392"
 		case 3:
 			nid = "426"
+		case 4:
+			nid = "487"
 		}
 	case 6:
 		fmt.Println("Select your school:\n" +
@@ -200,8 +202,7 @@ func main() {
 		}
 		switch input2 {
 		case 1:
-			fmt.Println("School not working...")
-			os.Exit(1)
+			nid = "367"
 		case 2:
 			nid = "246"
 		}
@@ -254,8 +255,7 @@ func main() {
 		}
 		switch input2 {
 		case 1:
-			fmt.Println("School not working...")
-			os.Exit(1)
+			nid = "41"
 		case 2:
 			nid = "412"
 		}
@@ -322,15 +322,17 @@ func main() {
 		}
 	case 17:
 		fmt.Println("Select your school:\n" +
-			"1.  North Alabama Lions")
+			"1.  North Alabama Lions\n" +
+			"2.  Auburn Montgomery Warhawks")
 		_, err = fmt.Scanln(&input2)
 		if err != nil {
 			log.Fatalln(err)
 		}
 		switch input2 {
 		case 1:
-			fmt.Println("School not working...")
-			os.Exit(1)
+			nid = "61"
+		case 2:
+			nid = "598"
 		}
 	case 18:
 		fmt.Println("Select your school:\n" +
@@ -356,7 +358,8 @@ func main() {
 		}
 	case 20:
 		fmt.Println("Select your school:\n" +
-			"1.  Lipscomb Bisons")
+			"1.  Lipscomb Bisons\n" +
+			"2.  Tusculum Pioneers")
 		_, err = fmt.Scanln(&input2)
 		if err != nil {
 			log.Fatalln(err)
@@ -364,6 +367,8 @@ func main() {
 		switch input2 {
 		case 1:
 			nid = "642"
+		case 2:
+			nid = "563"
 		}
 	case 21:
 		fmt.Println("Select your school:\n" +
@@ -378,6 +383,17 @@ func main() {
 			nid = "310"
 		case 2:
 			nid = "392"
+		}
+	case 22:
+		fmt.Println("Select your school:\n" +
+			"1.  UNC Pembroke Braves")
+		_, err = fmt.Scanln(&input2)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch input2 {
+		case 1:
+			nid = "185"
 		}
 	default:
 		fmt.Println("Enter custom number: ")
@@ -400,6 +416,7 @@ func main() {
 				//times = time.Duration(0)
 				printTime(times)
 				fmt.Println(" until " + eventTitles[i] + "\n")
+				//time.Sleep(time.Second * 5)
 				time.Sleep(time.Minute)
 			}
 			checkIn(i)
@@ -428,7 +445,6 @@ func generateUUID() string {
 
 func logIn() {
 	fmt.Println("Logging in with username " + user + " at school ID " + nid + "...")
-
 	request, err := http.PostForm("https://api.superfanu.com/8.0/login",
 		url.Values{
 			"user":     {user},
@@ -457,11 +473,12 @@ func logIn() {
 
 func getFeed() {
 	fmt.Printf("Getting feed...")
-	request, _ := http.NewRequest("GET", "https://api.superfanu.com/7.0.1/feed", nil)
+	request, _ := http.NewRequest("GET", "https://api.superfanu.com/8.0/feed", nil)
 	request.Header.Add("nid", nid)
 	request.Header.Add("platform", platform)
 	request.Header.Add("uuid", uuid)
 	request.Header.Add("login_key", loginKey)
+	request.Header.Set("user-agent", "okhttp/3.11.0")
 	response, _ := hclient.Do(request)
 	if response.StatusCode == 200 {
 		fmt.Println("Feed successfully fetched!")
@@ -503,11 +520,12 @@ func eventPrinter() {
 		fmt.Println("POINT VALUE = " + pointValues[i])
 		fmt.Println("START TIME = " + startTimes[i].Format(time.RFC1123))
 		fmt.Println("END TIME = " + endTimes[i].Format(time.RFC1123))
-		request, _ := http.NewRequest("GET", "https://api.superfanu.com/7.0.1/event/"+eventIDs[i]+"/details", nil)
+		request, _ := http.NewRequest("GET", "https://api.superfanu.com/8.0/event/"+eventIDs[i]+"/details", nil)
 		request.Header.Add("nid", nid)
 		request.Header.Add("platform", platform)
 		request.Header.Add("uuid", uuid)
 		request.Header.Add("login_key", loginKey)
+		request.Header.Set("user-agent", "okhttp/3.11.0")
 		response, _ := hclient.Do(request)
 		body, _ := ioutil.ReadAll(response.Body)
 		var results interface{}
@@ -546,13 +564,12 @@ func eventPrinter() {
 
 	if len(eventIDs) == 0 {
 		fmt.Println("No events currently. Sleeping for 1 hour.")
-		//time.Sleep(time.Hour)
+		time.Sleep(time.Hour)
 	}
 }
 
 func checkIn(index int) {
-	request, _ := http.NewRequest("POST", "https://api.superfanu.com/7.0.1/event/check-in", nil)
-	request.PostForm = url.Values{
+	data := url.Values{
 		"eid":                 {eventIDs[index]},
 		"latitude":            {fmt.Sprint(generatedLatitidues[index])},
 		"longitude":           {fmt.Sprint(generatedLongitudes[index])},
@@ -560,14 +577,14 @@ func checkIn(index int) {
 		"horizontal_accuracy": {fmt.Sprint(rand.Intn(20))},
 		"vertical_accuracy":   {fmt.Sprint(rand.Intn(20))},
 	}
+	request, _ := http.NewRequest("POST", "https://api.superfanu.com/8.0/event/check-in", strings.NewReader(data.Encode()))
 	request.Header.Add("nid", nid)
 	request.Header.Add("platform", platform)
 	request.Header.Add("uuid", uuid)
 	request.Header.Add("login_key", loginKey)
 	request.Header.Add("content-type", "application/x-www-form-urlencoded")
+	request.Header.Set("content-length", strconv.Itoa(len(data.Encode())))
 	request.Header.Set("user-agent", "okhttp/3.11.0")
-	request.Header.Set("content-length", "109")
-
 	response, _ := hclient.Do(request)
 	body, _ := ioutil.ReadAll(response.Body)
 	log.Println(string(body) + "\n")
