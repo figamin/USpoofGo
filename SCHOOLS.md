@@ -8,11 +8,14 @@
 - Northeastern University Huskies
 - Harvard University Crimson
 - Babson Beavers
+- Springfield Squad
+- Brandeis Judges
 - Bentley Falcons
 ### California
 - California Golden Bears
 - UCLA Bruins
 - California Baptist Lancers
+- Cal State Dominguez Hills Toros
 ### Connecticut
 - Sacred Heart Pioneers
 - Fairfield Stags
@@ -31,6 +34,7 @@
 ### Ohio
 - Xavier Musketeers
 - Cincinnati Bearcats
+- Akron Zips
 ### Kansas
 - Wichita State Shockers
 ### Oregon
@@ -51,6 +55,7 @@
 - Florida Gators
 - North Florida Ospreys
 - South Florida Bulls
+- Florida Gulf Coast Eagles
 ### Wisconsin
 - Marquette Golden Eagles
 - UW Milwaukee Panthers
@@ -79,3 +84,12 @@
 - Arizona Wildcats
 ### North Dakota
 - North Dakota Fighting Hawks
+### Kentucky
+- Western Kentucky Hilltoppers
+- Centre College Colonels
+### Missouri
+- UMSL Tritons
+- Saint Louis Billikens
+- Missouri Tigers
+### Virginia
+- Virginia Tech Hokies
