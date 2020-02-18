@@ -27,8 +27,8 @@ var eventID, eventTitle, eventDescription, pointValue string
 var generatedLatitude, generatedLongitude float64
 var startTime, endTime time.Time
 var err error
-var retry = false
-var debug = true
+var debug = false
+var relogCounter = 0
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -36,7 +36,7 @@ func main() {
 	flag.StringVar(&pass, "pass", "0", "SuperFanU Password")
 	flag.StringVar(&nid, "nid", "0", "SuperFanU School ID")
 	flag.Parse()
-	fmt.Println("Welcome to USpoofGo 1.3\nBy Ian Anderson, 2020")
+	fmt.Println("Welcome to USpoofGo 1.3.1\nBy Ian Anderson, 2020")
 	if user == "0" {
 		fmt.Println("Enter your username:")
 		_, err = fmt.Scanln(&user)
@@ -106,7 +106,12 @@ func main() {
 			fmt.Println(" until " + eventTitle + "\n")
 
 		}
+		if relogCounter == 10 {
+			logIn()
+			relogCounter = 0
+		}
 		checkIn()
+		relogCounter++
 		times = time.Second
 		for times > time.Duration(0) {
 			if debug {
@@ -280,10 +285,11 @@ func checkIn() {
 	response, _ := hclient.Do(request)
 	if response.StatusCode == 200 {
 		fmt.Println("Checked In Successfully!")
+		log.Println("Checked In Successfully!")
 	} else {
-		fmt.Println("Failed to check in. Retrying...")
+		fmt.Println("Failed to check in.")
+		log.Println("Failed to check in.")
 		logIn()
-		checkIn()
 	}
 	oldEventID = eventID
 
