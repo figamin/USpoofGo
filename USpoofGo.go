@@ -21,25 +21,22 @@ var user = "0"
 var pass = "0"
 var nid = "0"
 var loginKey = ""
+var oldEventID = ""
 var hclient = http.Client{}
-var eventIDs, eventTitles, eventDescriptions, pointValues []string
-var generatedLatitudes, generatedLongitudes []float64
-var startTimes, endTimes []time.Time
+var eventID, eventTitle, eventDescription, pointValue string
+var generatedLatitude, generatedLongitude float64
+var startTime, endTime time.Time
 var err error
+var retry = false
+var debug = true
 
 func main() {
-	logfile, err := os.OpenFile("USpoofLog", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer logfile.Close()
-	log.SetOutput(logfile)
 	rand.Seed(time.Now().UnixNano())
 	flag.StringVar(&user, "user", "0", "SuperFanU Username")
 	flag.StringVar(&pass, "pass", "0", "SuperFanU Password")
 	flag.StringVar(&nid, "nid", "0", "SuperFanU School ID")
 	flag.Parse()
-	fmt.Println("Welcome to USpoofGo 1.2\nBy Ian Anderson, 2020")
+	fmt.Println("Welcome to USpoofGo 1.3\nBy Ian Anderson, 2020")
 	if user == "0" {
 		fmt.Println("Enter your username:")
 		_, err = fmt.Scanln(&user)
@@ -55,467 +52,20 @@ func main() {
 		}
 	}
 	if nid == "0" {
-		fmt.Println("Select your school's state:\n" +
-			"1.  Massachusetts\n" +
-			"2.  California\n" +
-			"3.  Connecticut\n" +
-			"4.  New Hampshire\n" +
-			"5.  Pennsylvania\n" +
-			"6.  Maine\n" +
-			"7.  Ohio\n" +
-			"8.  Kansas\n" +
-			"9.  Oregon\n" +
-			"10. Iowa\n" +
-			"11. Michigan\n" +
-			"12. Texas\n" +
-			"13. Rhode Island\n" +
-			"14. Florida\n" +
-			"15. Wisconsin\n" +
-			"16. Indiana\n" +
-			"17. Alabama\n" +
-			"18. New York\n" +
-			"19. New Jersey\n" +
-			"20. Tennessee\n" +
-			"21. Maryland\n" +
-			"22. North Carolina\n" +
-			"23. Hawaii\n" +
-			"24. Arizona\n" +
-			"25. North Dakota\n" +
-			"26. Kentucky\n" +
-			"27. Missouri\n" +
-			"28. Virginia\n" +
-			/*"29. \n" +
-			"30. \n" +*/
+		fmt.Println("Select your school list:\n" +
+			"1.  Colleges/Universities\n" +
+			"2.  High Schools\n" +
 			"0.  Manual NID Entry")
 		var input int
 		_, err = fmt.Scanln(&input)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		var input2 int
 		switch input {
-		case 1: //mass
-			fmt.Println("Select your school:\n" +
-				"1.  UMass Minutemen\n" +
-				"2.  UMass Lowell River Hawks\n" +
-				"3.  Holy Cross Crusaders\n" +
-				"4.  Boston College Eagles\n" +
-				"5.  Boston University Terriers\n" +
-				"6.  Northeastern University Huskies\n" +
-				"7.  Harvard University Crimson\n" +
-				"8.  Babson Beavers\n" +
-				"9.  Springfield Squad\n" +
-				"10. Brandeis Judges\n" +
-				"11. Bentley Falcons")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "539"
-			case 2:
-				nid = "694"
-			case 3:
-				nid = "244"
-			case 4:
-				nid = "47"
-			case 5:
-				nid = "51"
-			case 6:
-				nid = "675"
-			case 7:
-				nid = "50"
-			case 8:
-				nid = "761"
-			case 9:
-				nid = "622"
-			case 10:
-				nid = "471"
-			case 11:
-				nid = "109"
-			}
+		case 1:
+			uSchoolSelection()
 		case 2:
-			fmt.Println("Select your school:\n" +
-				"1.  California Golden Bears\n" +
-				"2.  UCLA Bruins\n" +
-				"3.  California Baptist Lancers\n" +
-				"4.  Cal State Dominguez Hills Toros")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "89"
-			case 2:
-				nid = "45"
-			case 3:
-				nid = "441"
-			case 4:
-				nid = "382"
-			}
-		case 3:
-			fmt.Println("Select your school:\n" +
-				"1.  Sacred Heart Pioneers\n" +
-				"2.  Fairfield Stags\n" +
-				"3.  New Haven Chargers")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "543"
-			case 2:
-				nid = "20"
-			case 3:
-				nid = "207"
-			}
-		case 4:
-			fmt.Println("Select your school:\n" +
-				"1.  New Hampshire Wildcats\n" +
-				"2.  Dartmouth Big Green\n" +
-				"3.  Keene State Hooties")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "157"
-			case 2:
-				nid = "435"
-			case 3:
-				nid = "175"
-			}
-		case 5:
-			fmt.Println("Select your school:\n" +
-				"1.  Penn Quakers\n" +
-				"2.  Bucknell Bison\n" +
-				"3.  Lafayette Leopards\n" +
-				"4.  Edinboro Fighting Scots")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "435"
-			case 2:
-				nid = "392"
-			case 3:
-				nid = "426"
-			case 4:
-				nid = "487"
-			}
-		case 6:
-			fmt.Println("Select your school:\n" +
-				"1.  Maine Black Bears")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "10"
-			}
-		case 7:
-			fmt.Println("Select your school:\n" +
-				"1.  Xavier Musketeers\n" +
-				"2.  Cincinnati Bearcats\n" +
-				"3.  Akron Zips")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "367"
-			case 2:
-				nid = "246"
-			case 3:
-				nid = "390"
-			}
-		case 8:
-			fmt.Println("Select your school:\n" +
-				"1.  Wichita State Shockers")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "21"
-			}
-		case 9:
-			fmt.Println("Select your school:\n" +
-				"1.  George Fox Bruins")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "605"
-			}
-		case 10:
-			fmt.Println("Select your school:\n" +
-				"1.  Briar Cliff Chargers\n" +
-				"2.  Drake Bulldogs\n" +
-				"3.  Iowa State Cyclones")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "541"
-			case 2:
-				nid = "627"
-			case 3:
-				nid = "689"
-			}
-		case 11:
-			fmt.Println("Select your school:\n" +
-				"1.  Eastern Michigan Eagles\n" +
-				"2.  Grand Valley State Lakers")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "41"
-			case 2:
-				nid = "412"
-			}
-		case 12:
-			fmt.Println("Select your school:\n" +
-				"1.  St. Mary's Rattlers\n" +
-				"2.  Texas A&M–Kingsville Javelinas")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "395"
-			case 2:
-				nid = "472"
-			}
-		case 13:
-			fmt.Println("Select your school:\n" +
-				"1.  Brown Bears")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "604"
-			}
-		case 14:
-			fmt.Println("Select your school:\n" +
-				"1.  Florida Gators\n" +
-				"2.  North Florida Ospreys\n" +
-				"3.  South Florida Bulls\n" +
-				"4.  Florida Gulf Coast Eagles")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "35"
-			case 2:
-				nid = "672"
-			case 3:
-				nid = "127"
-			case 4:
-				nid = "60"
-			}
-		case 15:
-			fmt.Println("Select your school:\n" +
-				"1.  Marquette Golden Eagles\n" +
-				"2.  UW Milwaukee Panthers\n" +
-				"3.  UW Platteville Pioneers")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "445"
-			case 2:
-				nid = "65"
-			case 3:
-				nid = "432"
-			}
-		case 16:
-			fmt.Println("Select your school:\n" +
-				"1.  Indiana State Sycamores")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "40"
-			}
-		case 17:
-			fmt.Println("Select your school:\n" +
-				"1.  North Alabama Lions\n" +
-				"2.  Auburn Montgomery Warhawks")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "61"
-			case 2:
-				nid = "598"
-			}
-		case 18:
-			fmt.Println("Select your school:\n" +
-				"1.  Saint Rose Golden Knights")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "447"
-			}
-		case 19:
-			fmt.Println("Select your school:\n" +
-				"1.  Princeton Tigers")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "149"
-			}
-		case 20:
-			fmt.Println("Select your school:\n" +
-				"1.  Lipscomb Bisons\n" +
-				"2.  Tusculum Pioneers")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "642"
-			case 2:
-				nid = "563"
-			}
-		case 21:
-			fmt.Println("Select your school:\n" +
-				"1.  UMBC Retrievers\n" +
-				"2.  Maryland Eastern Shore Hawks")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "310"
-			case 2:
-				nid = "392"
-			}
-		case 22:
-			fmt.Println("Select your school:\n" +
-				"1.  UNC Pembroke Braves\n" +
-				"2.  UNC Charlotte 49ers")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "185"
-			case 2:
-				nid = "124"
-			}
-		case 23:
-			fmt.Println("Select your school:\n" +
-				"1.  Hawaii Rainbow Warriors")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "547"
-			}
-		case 24:
-			fmt.Println("Select your school:\n" +
-				"1.  Arizona Wildcats")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "167"
-			}
-		case 25:
-			fmt.Println("Select your school:\n" +
-				"1.  North Dakota Fighting Hawks")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "706"
-			}
-		case 26:
-			fmt.Println("Select your school:\n" +
-				"1.  Western Kentucky Hilltoppers\n" +
-				"2.  Centre College Colonels")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "625"
-			case 2:
-				nid = "440"
-			}
-		case 27:
-			fmt.Println("Select your school:\n" +
-				"1.  UMSL Tritons\n" +
-				"2.  Saint Louis Billikens\n" +
-				"3.  Missouri Tigers")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "191"
-			case 2:
-				nid = "628"
-			case 3:
-				nid = "95"
-			}
-		case 28:
-			fmt.Println("Select your school:\n" +
-				"1.  Virginia Tech Hokies")
-			_, err = fmt.Scanln(&input2)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			switch input2 {
-			case 1:
-				nid = "166"
-			}
+			hSchoolSelection()
 		default:
 			fmt.Println("Enter custom number: ")
 			_, err = fmt.Scanln(&nid)
@@ -524,6 +74,12 @@ func main() {
 			}
 		}
 	}
+	logfile, err := os.OpenFile("USpoofLog-School-"+nid, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer logfile.Close()
+	log.SetOutput(logfile)
 	possiblePlatforms := []string{"iOS", "Android"}
 	platform = possiblePlatforms[rand.Intn(2)]
 	if platform == "iOS" {
@@ -533,30 +89,39 @@ func main() {
 	}
 	uuid = generateUUID()
 	logIn()
-	getFeed()
+	getNextEvent()
 	eventPrinter()
 	for {
-		for i := range eventIDs {
-			var times = time.Second
-			for times > time.Duration(0) {
-				times = startTimes[i].Sub(time.Now())
-				//times = time.Duration(0)
-				printTime(times)
-				fmt.Println(" until " + eventTitles[i] + "\n")
-				//time.Sleep(time.Second * 5)
+		var times = time.Second
+		for times > time.Duration(0) {
+			if debug {
+				times = time.Duration(0)
+				time.Sleep(time.Second * 5)
+			} else {
+				times = startTime.Sub(time.Now())
 				time.Sleep(time.Minute)
 			}
-			checkIn(i)
+
+			printTime(times)
+			fmt.Println(" until " + eventTitle + "\n")
+
 		}
-		eventIDs = nil
-		eventTitles = nil
-		eventDescriptions = nil
-		pointValues = nil
-		startTimes = nil
-		endTimes = nil
-		generatedLatitudes = nil
-		generatedLongitudes = nil
-		getFeed()
+		checkIn()
+		times = time.Second
+		for times > time.Duration(0) {
+			if debug {
+				times = time.Duration(0)
+				time.Sleep(time.Second * 5)
+			} else {
+				times = endTime.Sub(time.Now())
+				times -= time.Minute * 15
+				time.Sleep(time.Minute)
+			}
+			printTime(times)
+			fmt.Println(" until fetching the next event.\n")
+
+		}
+		getNextEvent()
 		eventPrinter()
 	}
 }
@@ -598,7 +163,7 @@ func logIn() {
 	}
 }
 
-func getFeed() {
+func getNextEvent() {
 	fmt.Printf("Getting feed...")
 	request, _ := http.NewRequest("GET", "https://api.superfanu.com/8.0/feed", nil)
 	request.Header.Add("nid", nid)
@@ -619,87 +184,87 @@ func getFeed() {
 	result3 := results.(map[string]interface{})["data"].([]interface{})
 	for _, v := range result3 {
 		var result4 = v.([]interface{})
-		for _, u := range result4 {
-			var result5 = u.(map[string]interface{})
-			//fmt.Println(result5)
+		resultCount := 0
+		for eventID == oldEventID {
+			var result5 = result4[resultCount].(map[string]interface{})
 			var newStartTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["starttime"]), " ", "T", 1)+"Z")
 			if newStartTime.Year() != 1 {
-				eventIDs = append(eventIDs, fmt.Sprint(result5["eid"]))
-				eventTitles = append(eventTitles, fmt.Sprint(result5["title"]))
-				eventDescriptions = append(eventDescriptions, fmt.Sprint(result5["description"]))
-				pointValues = append(pointValues, fmt.Sprint(result5["pointvalue"]))
+				eventID = fmt.Sprint(result5["eid"])
+				eventTitle = fmt.Sprint(result5["title"])
+				eventDescription = fmt.Sprint(result5["description"])
+				pointValue = fmt.Sprint(result5["pointvalue"])
 				_, offset := time.Now().Zone()
-				newStartTime = newStartTime.Add(time.Second * time.Duration(-offset))
-				startTimes = append(startTimes, newStartTime.Add(time.Hour+time.Minute*time.Duration(rand.Intn(10))))
+				startTime = newStartTime.Add((time.Second * time.Duration(-offset)) + (time.Hour + time.Minute*time.Duration(rand.Intn(10))))
 				var newEndTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["endtime"]), " ", "T", 1)+"Z")
-				newEndTime = newEndTime.Add(time.Second * time.Duration(-offset))
-				endTimes = append(endTimes, newEndTime.Add(time.Hour))
+				endTime = newEndTime.Add((time.Second * time.Duration(-offset)) + (time.Hour + time.Minute))
 			}
+			resultCount++
 		}
+
 	}
 }
 
 func eventPrinter() {
-	for i := range eventIDs {
-		fmt.Println("EVENT ID = " + eventIDs[i])
-		fmt.Println("EVENT TITLE = " + eventTitles[i])
-		fmt.Println("EVENT DESCRIPTION = " + eventDescriptions[i])
-		fmt.Println("POINT VALUE = " + pointValues[i])
-		fmt.Println("START TIME = " + startTimes[i].Format(time.RFC1123))
-		fmt.Println("END TIME = " + endTimes[i].Format(time.RFC1123))
-		request, _ := http.NewRequest("GET", "https://api.superfanu.com/8.0/event/"+eventIDs[i]+"/details", nil)
-		request.Header.Add("nid", nid)
-		request.Header.Add("platform", platform)
-		request.Header.Add("uuid", uuid)
-		request.Header.Add("login_key", loginKey)
-		request.Header.Set("user-agent", ustring)
-		response, _ := hclient.Do(request)
-		body, _ := ioutil.ReadAll(response.Body)
-		var results interface{}
-		err = json.Unmarshal([]byte(string(body)), &results)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		result3 := results.(map[string]interface{})["data"].([]interface{})
-		for _, v := range result3 {
-			result4 := v.(map[string]interface{})["event"].(map[string]interface{})["venues"].([]interface{})
-			for _, u := range result4 {
-				var result5 = u.(map[string]interface{})
-				var latitude = fmt.Sprint(result5["latitude"])
-				var longitude = fmt.Sprint(result5["longitude"])
-				fmt.Println("LATITUDE = " + latitude)
-				fmt.Println("LONGITUDE = " + longitude)
-				var randCloseLatitude float64
-				var randCloseLongitude float64
-				randCloseLatitude, _ = strconv.ParseFloat(latitude, 64)
-				randCloseLongitude, _ = strconv.ParseFloat(longitude, 64)
-				randCloseLatitude = ((math.Round(randCloseLatitude*10000) * 100) + float64(rand.Intn(100))) / 1000000.0
-				randCloseLongitude = ((math.Round(randCloseLongitude*10000) * 100) + float64(rand.Intn(100))) / 1000000.0
-				fmt.Println("RANDOM CLOSE LATITUDE = " + fmt.Sprint(randCloseLatitude))
-				fmt.Println("RANDOM CLOSE LONGITUDE = " + fmt.Sprint(randCloseLongitude))
-				generatedLatitudes = append(generatedLatitudes, randCloseLatitude)
-				generatedLongitudes = append(generatedLongitudes, randCloseLongitude)
-				fmt.Println("EXACT LOCATION PREVIEW = https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude)
-				fmt.Println("RANDOM CLOSE LOCATION PREVIEW = https://www.google.com/maps/search/?api=1&query=" + fmt.Sprint(randCloseLatitude) + "," + fmt.Sprint(randCloseLongitude))
-			}
-		}
-		fmt.Print("Event starts in ")
-		printTime(startTimes[i].Sub(time.Now()))
-		fmt.Println()
-		fmt.Println()
+	fmt.Println("EVENT ID = " + eventID)
+	fmt.Println("EVENT TITLE = " + eventTitle)
+	fmt.Println("EVENT DESCRIPTION = " + eventDescription)
+	fmt.Println("POINT VALUE = " + pointValue)
+	fmt.Println("START TIME = " + startTime.Format(time.RFC1123))
+	fmt.Println("END TIME = " + endTime.Format(time.RFC1123))
+	log.Println("EVENT ID = " + eventID)
+	log.Println("EVENT TITLE = " + eventTitle)
+	log.Println("EVENT DESCRIPTION = " + eventDescription)
+	log.Println("POINT VALUE = " + pointValue)
+	log.Println("START TIME = " + startTime.Format(time.RFC1123))
+	log.Println("END TIME = " + endTime.Format(time.RFC1123))
+	request, _ := http.NewRequest("GET", "https://api.superfanu.com/8.0/event/"+eventID+"/details", nil)
+	request.Header.Add("nid", nid)
+	request.Header.Add("platform", platform)
+	request.Header.Add("uuid", uuid)
+	request.Header.Add("login_key", loginKey)
+	request.Header.Set("user-agent", ustring)
+	response, _ := hclient.Do(request)
+	body, _ := ioutil.ReadAll(response.Body)
+	var results interface{}
+	err = json.Unmarshal([]byte(string(body)), &results)
+	if err != nil {
+		log.Fatalln(err)
 	}
+	result3 := results.(map[string]interface{})["data"].([]interface{})
+	for _, v := range result3 {
+		result4 := v.(map[string]interface{})["event"].(map[string]interface{})["venues"].([]interface{})
+		for _, u := range result4 {
+			var result5 = u.(map[string]interface{})
+			var latitude = fmt.Sprint(result5["latitude"])
+			var longitude = fmt.Sprint(result5["longitude"])
+			fmt.Println("LATITUDE = " + latitude)
+			fmt.Println("LONGITUDE = " + longitude)
+			generatedLatitude, _ = strconv.ParseFloat(latitude, 64)
+			generatedLongitude, _ = strconv.ParseFloat(longitude, 64)
+			generatedLatitude = ((math.Round(generatedLatitude*10000) * 100) + float64(rand.Intn(100))) / 1000000.0
+			generatedLongitude = ((math.Round(generatedLongitude*10000) * 100) + float64(rand.Intn(100))) / 1000000.0
+			fmt.Println("RANDOM CLOSE LATITUDE = " + fmt.Sprint(generatedLatitude))
+			fmt.Println("RANDOM CLOSE LONGITUDE = " + fmt.Sprint(generatedLongitude))
+			fmt.Println("EXACT LOCATION PREVIEW = https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude)
+			fmt.Println("RANDOM CLOSE LOCATION PREVIEW = https://www.google.com/maps/search/?api=1&query=" + fmt.Sprint(generatedLatitude) + "," + fmt.Sprint(generatedLongitude))
+		}
+	}
+	fmt.Print("Event starts in ")
+	printTime(startTime.Sub(time.Now()))
+	fmt.Println()
+	fmt.Println()
 
-	if len(eventIDs) == 0 {
+	if eventID == oldEventID {
 		fmt.Println("No events currently. Sleeping for 1 hour.")
 		time.Sleep(time.Hour)
 	}
 }
 
-func checkIn(index int) {
+func checkIn() {
 	data := url.Values{
-		"eid":                 {eventIDs[index]},
-		"latitude":            {fmt.Sprint(generatedLatitudes[index])},
-		"longitude":           {fmt.Sprint(generatedLongitudes[index])},
+		"eid":                 {eventID},
+		"latitude":            {fmt.Sprint(generatedLatitude)},
+		"longitude":           {fmt.Sprint(generatedLongitude)},
 		"altitude":            {fmt.Sprint(rand.Intn(100))},
 		"horizontal_accuracy": {fmt.Sprint(rand.Intn(20))},
 		"vertical_accuracy":   {fmt.Sprint(rand.Intn(20))},
@@ -713,8 +278,15 @@ func checkIn(index int) {
 	request.Header.Set("content-length", strconv.Itoa(len(data.Encode())))
 	request.Header.Set("user-agent", ustring)
 	response, _ := hclient.Do(request)
-	body, _ := ioutil.ReadAll(response.Body)
-	log.Println(string(body) + "\n")
+	if response.StatusCode == 200 {
+		fmt.Println("Checked In Successfully!")
+	} else {
+		fmt.Println("Failed to check in. Retrying...")
+		logIn()
+		checkIn()
+	}
+	oldEventID = eventID
+
 }
 
 func printTime(d time.Duration) {
