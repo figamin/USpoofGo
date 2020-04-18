@@ -36,7 +36,7 @@ func main() {
 	flag.StringVar(&pass, "pass", "0", "SuperFanU Password")
 	flag.StringVar(&nid, "nid", "0", "SuperFanU School ID")
 	flag.Parse()
-	fmt.Println("Welcome to USpoofGo 1.3.1\nBy Ian Anderson, 2020")
+	fmt.Println("Welcome to USpoofGo 1.3.2\nBy Ian Anderson, 2020")
 	if user == "0" {
 		fmt.Println("Enter your username:")
 		_, err = fmt.Scanln(&user)
@@ -87,12 +87,16 @@ func main() {
 	} else {
 		ustring = "okhttp/3.11.0"
 	}
+	var times time.Duration
 	uuid = generateUUID()
 	logIn()
-	getNextEvent()
-	eventPrinter()
+	if getNextEvent() {
+		eventPrinter()
+		times = time.Second
+	} else {
+		times = time.Hour * 24
+	}
 	for {
-		var times = time.Second
 		for times > time.Duration(0) {
 			if debug {
 				times = time.Duration(0)
@@ -126,8 +130,12 @@ func main() {
 			fmt.Println(" until fetching the next event.\n")
 
 		}
-		getNextEvent()
-		eventPrinter()
+		if getNextEvent() {
+			eventPrinter()
+			times = time.Second
+		} else {
+			times = time.Hour * 24
+		}
 	}
 }
 
@@ -168,7 +176,7 @@ func logIn() {
 	}
 }
 
-func getNextEvent() {
+func getNextEvent() bool {
 	fmt.Printf("Getting feed...")
 	request, _ := http.NewRequest("GET", "https://api.superfanu.com/8.0/feed", nil)
 	request.Header.Add("nid", nid)
@@ -191,22 +199,30 @@ func getNextEvent() {
 		var result4 = v.([]interface{})
 		resultCount := 0
 		for eventID == oldEventID {
-			var result5 = result4[resultCount].(map[string]interface{})
-			var newStartTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["starttime"]), " ", "T", 1)+"Z")
-			if newStartTime.Year() != 1 {
-				eventID = fmt.Sprint(result5["eid"])
-				eventTitle = fmt.Sprint(result5["title"])
-				eventDescription = fmt.Sprint(result5["description"])
-				pointValue = fmt.Sprint(result5["pointvalue"])
-				_, offset := time.Now().Zone()
-				startTime = newStartTime.Add((time.Second * time.Duration(-offset)) + (time.Hour + time.Minute*time.Duration(rand.Intn(10))))
-				var newEndTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["endtime"]), " ", "T", 1)+"Z")
-				endTime = newEndTime.Add((time.Second * time.Duration(-offset)) + (time.Hour + time.Minute))
+			if len(result4) != 0 {
+				var result5 = result4[resultCount].(map[string]interface{})
+				var newStartTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["starttime"]), " ", "T", 1)+"Z")
+				if newStartTime.Year() != 1 {
+					eventID = fmt.Sprint(result5["eid"])
+					eventTitle = fmt.Sprint(result5["title"])
+					eventDescription = fmt.Sprint(result5["description"])
+					pointValue = fmt.Sprint(result5["pointvalue"])
+					_, offset := time.Now().Zone()
+					startTime = newStartTime.Add((time.Second * time.Duration(-offset)) + (time.Hour + time.Minute*time.Duration(rand.Intn(10))))
+					var newEndTime, _ = time.Parse(time.RFC3339, strings.Replace(fmt.Sprint(result5["endtime"]), " ", "T", 1)+"Z")
+					endTime = newEndTime.Add((time.Second * time.Duration(-offset)) + (time.Hour + time.Minute))
+				}
+				resultCount++
+			} else {
+				fmt.Println("No events available. Checking again tomorrow...")
+				log.Println("No events available. Checking again tomorrow...")
+				return false
 			}
-			resultCount++
+
 		}
 
 	}
+	return true
 }
 
 func eventPrinter() {
